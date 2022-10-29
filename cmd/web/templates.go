@@ -1,6 +1,6 @@
 package main
 
-import "snippetbox.aidostt.net/internal/models"
+import "snippetbox.KazbekTutinbay.net/internal/models"
 
 type templateData struct {
 	Snippet  *models.Snippet
