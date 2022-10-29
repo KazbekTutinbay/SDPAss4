@@ -9,7 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"snippetbox.aidostt.net/internal/models"
+	"snippetbox.KazbekTutinbay.net/internal/models"
 )
 
 type application struct {
