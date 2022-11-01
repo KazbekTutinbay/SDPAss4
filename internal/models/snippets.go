@@ -2,8 +2,8 @@ package models
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -20,11 +20,10 @@ type SnippetModel struct {
 	Conn *pgxpool.Pool
 }
 
-func (m *SnippetModel) Insert(title string, content string, expires string) (num int, err error) {
+func (m *SnippetModel) Insert(title string, content string, expires int) (num int, err error) {
 	stmt := `INSERT INTO snippets (title, content, created, expires) 
 VALUES($1, $2, now(), (now() + INTERVAL '1 day' * $3)) returning id`
 
-	//date, err := time.Parse("2", expires)
 	row := m.Conn.QueryRow(context.Background(), stmt, title, content, expires)
 	var id uint64
 	err = row.Scan(&id)
@@ -60,11 +59,6 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 		return nil, err
 	}
 
-	// Откладываем вызов rows.Close(), чтобы быть уверенным, что набор результатов из sql.Rows
-	// правильно закроется перед вызовом метода Latest(). Этот оператор откладывания
-	// должен выполнится *после* проверки на наличие ошибки в методе Query().
-	// В противном случае, если Query() вернет ошибку, это приведет к панике
-	// так как он попытается закрыть набор результатов у которого значение: nil.
 	defer rows.Close()
 
 	var snippets []*Snippet
